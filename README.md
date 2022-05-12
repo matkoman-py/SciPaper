@@ -1,2 +1,2 @@
 # SciPaper
-Simple microservice application developed in Spring.
+Simple microservice application developed in Spring, using RabbitMQ.
