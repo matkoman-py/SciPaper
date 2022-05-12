@@ -1,8 +1,10 @@
 package com.example.SciPaperService.service;
 
+import com.example.SciPaperService.domain.Message;
 import com.example.SciPaperService.domain.Paper;
 import com.example.SciPaperService.domain.Section;
 import com.example.SciPaperService.repository.PaperRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +21,9 @@ public class PaperService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private RabbitTemplate template;
 
     public Paper createPaper(Paper paper) {
         Boolean isLoggedIn = restTemplate
@@ -52,15 +57,11 @@ public class PaperService {
         if(!paperOpt.isPresent()){
             throw new IllegalArgumentException("Paper with id: " + id + "doesn't exist!");
         }
-//
-//        Paper paper = paperOpt.get();
-//
-//        com.silvera.SciPaper.messages.scipapermsggroup.SciPaperPublished msg = new com.silvera.SciPaper.messages.scipapermsggroup.SciPaperPublished();
-//        msg.setId(id);
-//        msg.setTitle(paper.getTitle());
-//        msg.setAuthor(paper.getAuthor());
-//
-//        scipapermsggroupSciPaperPublishedKafkaTemplate.send("EV_PAPER_PUBLISHED_CHANNEL", msg);
+
+        Paper paper = paperOpt.get();
+
+        Message msg = new Message(id, paper.getTitle(), paper.getAuthor());
+        template.convertAndSend("message_exchange", "routingKey", msg);
 
         return "Success!";
     }

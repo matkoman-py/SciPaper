@@ -15,4 +15,8 @@ public class FallbackController {
     public String sciPaperServiceFallbackMethod(){
         return "Scipaper service is taking longer than expected!";
     }
+    @GetMapping("/libraryServiceFallback")
+    public String libraryServiceFallbackMethod(){
+        return "Library service is taking longer than expected!";
+    }
 }

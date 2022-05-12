@@ -20,3 +20,12 @@ spring:
               args:
                 name: SCIPAPER-SERVICE
                 fallbackuri: forward:/sciPaperServiceFallback
+        - id: LIBRARY-SERVICE
+          uri: lb://LIBRARY-SERVICE
+          predicates:
+            - Path=/library-service/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: LIBRARY-SERVICE
+                fallbackuri: forward:/libraryServiceFallback
