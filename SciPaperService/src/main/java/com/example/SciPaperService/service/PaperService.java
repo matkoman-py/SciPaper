@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PaperService {
@@ -21,14 +22,14 @@ public class PaperService {
 
     public Paper createPaper(Paper paper) {
         Boolean isLoggedIn = restTemplate
-                .getForObject("http://localhost:9001/user-service/isloggedin/" + paper.getAuthor(), Boolean.class);
+                .getForObject("http://USER-SERVICE/user-service/isloggedin/" + paper.getAuthor(), Boolean.class);
 
         if(!isLoggedIn){
             throw new IllegalArgumentException("User with username: " + paper.getAuthor() + "is not logged in!");
         }
 
         String authorFullName = restTemplate
-                .getForObject("http://localhost:9001/user-service/getname/" + paper.getAuthor(), String.class);
+                .getForObject("http://USER-SERVICE/user-service/getname/" + paper.getAuthor(), String.class);
 
         paper.setAuthor(authorFullName);
         paperRepository.save(paper);
@@ -39,15 +40,18 @@ public class PaperService {
         return paperRepository.findAll();
     }
 
-    public String publish(String id, String username) {
-//        if(!userClient.isLoggedIn(username)){
-//            throw new IllegalArgumentException("User with username: " + username + "is not logged in!");
-//        }
-//
-//        Optional<Paper> paperOpt = paperRepository.findById(id);
-//        if(!paperOpt.isPresent()){
-//            throw new IllegalArgumentException("Paper with id: " + id + "doesn't exist!");
-//        }
+    public String publish(Integer id, String username) {
+        Boolean isLoggedIn = restTemplate
+                .getForObject("http://USER-SERVICE/user-service/isloggedin/" + username, Boolean.class);
+
+        if(!isLoggedIn){
+            throw new IllegalArgumentException("User with username: " + username + "is not logged in!");
+        }
+
+        Optional<Paper> paperOpt = paperRepository.findById(id);
+        if(!paperOpt.isPresent()){
+            throw new IllegalArgumentException("Paper with id: " + id + "doesn't exist!");
+        }
 //
 //        Paper paper = paperOpt.get();
 //

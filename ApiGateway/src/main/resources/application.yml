@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: USER-SERVICE
+                fallbackuri: forward:/userServiceFallback
+        - id: SCIPAPER-SERVICE
+          uri: lb://SCIPAPER-SERVICE
+          predicates:
+            - Path=/paper-service/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: SCIPAPER-SERVICE
+                fallbackuri: forward:/sciPaperServiceFallback

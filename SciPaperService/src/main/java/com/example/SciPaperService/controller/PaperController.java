@@ -33,7 +33,7 @@ public class PaperController {
         return ResponseEntity.ok(paperService.listPapers());
     }
     @GetMapping(value="/publish/{id}/{username}")
-    public ResponseEntity<String> publish(@PathVariable String id, @PathVariable String username){
+    public ResponseEntity<String> publish(@PathVariable Integer id, @PathVariable String username){
         return ResponseEntity.ok(paperService.publish(id, username));
     }
 }
